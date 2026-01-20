@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import db from '@/lib/db';
+import pool from '@/lib/db';
 import { generateText } from '@/lib/gemini';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -15,13 +15,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // ツールの存在確認
-    const tool = db.prepare('SELECT * FROM tools WHERE id = ?').get(toolId) as any;
+    const toolResult = await pool.query('SELECT * FROM tools WHERE id = $1', [toolId]);
+    const tool = toolResult.rows[0];
+    
     if (!tool) {
       return res.status(404).json({ error: 'Tool not found' });
     }
 
-    // カスタムプロンプトを取得（tagsフィールドに保存されている）
-    const customPrompt = tool.tags || null;
+    // カスタムプロンプトを取得
+    const customPrompt = tool.customprompt || tool.tags || null;
 
     // Gemini APIを使用してテキスト生成（モデル指定、APIキー、カスタムプロンプト）
     const outputText = await generateText(
@@ -34,23 +36,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     // 生成結果を保存
-    const stmt = db.prepare(`
-      INSERT INTO generation_runs (toolId, inputJson, outputText, status)
-      VALUES (?, ?, ?, ?)
-    `);
-
-    const result = stmt.run(
-      toolId,
-      JSON.stringify(input),
-      outputText,
-      'success'
+    const result = await pool.query(
+      `INSERT INTO generation_runs (toolId, inputJson, outputText, status)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id`,
+      [
+        toolId,
+        JSON.stringify(input),
+        outputText,
+        'success'
+      ]
     );
 
     // メトリック値を更新（利用回数）
-    db.prepare('UPDATE tools SET metricValue = metricValue + 1 WHERE id = ?').run(toolId);
+    await pool.query('UPDATE tools SET metricValue = metricValue + 1 WHERE id = $1', [toolId]);
 
     res.status(200).json({
-      runId: result.lastInsertRowid,
+      runId: result.rows[0].id,
       outputText,
     });
   } catch (error) {

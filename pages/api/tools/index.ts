@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import db from '@/lib/db';
+import pool from '@/lib/db';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -11,18 +11,21 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     
     let query = 'SELECT * FROM tools WHERE 1=1';
     const params: any[] = [];
+    let paramIndex = 1;
 
     // カテゴリフィルタ
     if (categoryId) {
-      query += ' AND categoryId = ?';
+      query += ` AND categoryId = $${paramIndex}`;
       params.push(categoryId);
+      paramIndex++;
     }
 
     // キーワード検索
     if (q && typeof q === 'string') {
-      query += ' AND (name LIKE ? OR description LIKE ? OR tags LIKE ?)';
+      query += ` AND (name ILIKE $${paramIndex} OR description ILIKE $${paramIndex+1} OR tags ILIKE $${paramIndex+2})`;
       const searchTerm = `%${q}%`;
       params.push(searchTerm, searchTerm, searchTerm);
+      paramIndex += 3;
     }
 
     // ソート
@@ -33,15 +36,16 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // ページング用のカウント
-    const countQuery = query.replace('SELECT *', 'SELECT COUNT(*) as total');
-    const countResult = db.prepare(countQuery).get(...params) as { total: number };
-    const total = countResult.total;
+    const countQuery = query.replace('SELECT *', 'SELECT COUNT(*)::int as total');
+    const countResult = await pool.query(countQuery, params);
+    const total = countResult.rows[0].total;
 
     // ページング
-    query += ' LIMIT ? OFFSET ?';
+    query += ` LIMIT $${paramIndex} OFFSET $${paramIndex+1}`;
     params.push(parseInt(limit as string), parseInt(offset as string));
 
-    const tools = db.prepare(query).all(...params);
+    const result = await pool.query(query, params);
+    const tools = result.rows;
     const hasMore = parseInt(offset as string) + tools.length < total;
 
     res.status(200).json({

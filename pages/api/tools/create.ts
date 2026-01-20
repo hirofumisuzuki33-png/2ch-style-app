@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import db from '@/lib/db';
+import pool from '@/lib/db';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -24,30 +24,30 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // ツールを作成
-    const stmt = db.prepare(`
-      INSERT INTO tools (
+    const result = await pool.query(
+      `INSERT INTO tools (
         categoryId, 
         name, 
         description, 
         subCategory, 
         isPremium, 
-        tags, 
+        customPrompt, 
         metricValue
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    const result = stmt.run(
-      categoryId,
-      name,
-      description,
-      subCategory || null,
-      isPremium ? 1 : 0,
-      customPrompt || null, // tagsフィールドにカスタムプロンプトを保存
-      0 // 初期利用回数は0
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *`,
+      [
+        categoryId,
+        name,
+        description,
+        subCategory || null,
+        isPremium || false,
+        customPrompt || null,
+        0 // 初期利用回数は0
+      ]
     );
 
-    const newTool = db.prepare('SELECT * FROM tools WHERE id = ?').get(result.lastInsertRowid);
+    const newTool = result.rows[0];
 
     res.status(201).json({
       success: true,

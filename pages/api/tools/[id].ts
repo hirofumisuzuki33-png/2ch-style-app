@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import db from '@/lib/db';
+import pool from '@/lib/db';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -9,7 +9,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id } = req.query;
 
-    const tool = db.prepare('SELECT * FROM tools WHERE id = ?').get(id);
+    const result = await pool.query('SELECT * FROM tools WHERE id = $1', [id]);
+    const tool = result.rows[0];
 
     if (!tool) {
       return res.status(404).json({ error: 'Tool not found' });

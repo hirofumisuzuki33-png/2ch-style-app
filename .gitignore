@@ -37,3 +37,7 @@ next-env.d.ts
 # database
 data.db
 data.db-journal
+
+# IDE
+.cursor/
+.vscode/
