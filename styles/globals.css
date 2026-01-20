@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    /* 2ちゃんねる風テーマ */
+    --background: 40 20% 95%;
+    --foreground: 0 0% 10%;
+
+    --card: 40 30% 98%;
+    --card-foreground: 0 0% 10%;
+ 
+    --popover: 40 30% 98%;
+    --popover-foreground: 0 0% 10%;
+ 
+    --primary: 120 30% 45%;
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 40 20% 90%;
+    --secondary-foreground: 0 0% 10%;
+ 
+    --muted: 40 15% 92%;
+    --muted-foreground: 0 0% 40%;
+ 
+    --accent: 120 30% 40%;
+    --accent-foreground: 0 0% 100%;
+ 
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 20% 80%;
+    --input: 0 0% 100%;
+    --ring: 120 30% 45%;
+ 
+    --radius: 0rem;
+  }
+ 
+  .dark {
+    --background: 40 20% 95%;
+    --foreground: 0 0% 10%;
+ 
+    --card: 40 30% 98%;
+    --card-foreground: 0 0% 10%;
+ 
+    --popover: 40 30% 98%;
+    --popover-foreground: 0 0% 10%;
+ 
+    --primary: 120 30% 45%;
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 40 20% 90%;
+    --secondary-foreground: 0 0% 10%;
+ 
+    --muted: 40 15% 92%;
+    --muted-foreground: 0 0% 40%;
+ 
+    --accent: 120 30% 40%;
+    --accent-foreground: 0 0% 100%;
+ 
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+ 
+    --border: 40 20% 80%;
+    --input: 0 0% 100%;
+    --ring: 120 30% 45%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "MS Gothic", "MS UI Gothic", "ＭＳ ゴシック", "Osaka-Mono", monospace, sans-serif;
+    line-height: 1.4;
+  }
+}
+
+/* 2ちゃんねる風スタイル */
+@layer utilities {
+  .thread-header {
+    background-color: #ffffee;
+    border: 1px solid #cccccc;
+    padding: 8px;
+    margin: 4px 0;
+  }
+  
+  .post-number {
+    color: #008800;
+    font-weight: bold;
+  }
+  
+  .post-name {
+    color: #008800;
+    font-weight: bold;
+  }
+  
+  .post-date {
+    color: #000000;
+  }
+  
+  .post-content {
+    margin: 8px 0;
+    padding: 8px;
+    line-height: 1.5;
+  }
+  
+  .link-2ch {
+    color: #0000ff;
+    text-decoration: underline;
+  }
+  
+  .link-2ch:hover {
+    color: #ff0000;
+  }
+}
