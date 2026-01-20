@@ -70,8 +70,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       runId: result.rows[0].id,
       outputText,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error generating text:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error?.message || 'Unknown error',
+      details: process.env.NODE_ENV === 'development' ? error : undefined
+    });
   }
 }
