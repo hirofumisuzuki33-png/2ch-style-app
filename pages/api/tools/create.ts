@@ -26,28 +26,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // ツールを作成
     const result = await pool.query(
       `INSERT INTO tools (
-        categoryid, 
+        "categoryId", 
         name, 
         description, 
-        subcategory, 
-        ispremium, 
-        customprompt, 
-        metricvalue
+        "subCategory", 
+        "isPremium", 
+        "customPrompt", 
+        "metricValue"
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING 
         id, 
-        categoryid as "categoryId", 
+        "categoryId", 
         name, 
         description, 
-        subcategory as "subCategory", 
-        thumbnailurl as "thumbnailUrl",
+        "subCategory", 
+        "thumbnailUrl",
         tags,
-        ispremium as "isPremium", 
-        metricvalue as "metricValue",
-        createdat as "createdAt",
-        updatedat as "updatedAt",
-        customprompt as "customPrompt"`,
+        "isPremium", 
+        "metricValue",
+        "createdAt",
+        "updatedAt",
+        "customPrompt"`,
       [
         categoryId,
         name,

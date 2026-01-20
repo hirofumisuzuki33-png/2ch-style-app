@@ -18,28 +18,28 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     let query = `
       SELECT 
         gr.id,
-        gr.toolid as "toolId",
-        gr.inputjson as "inputJson",
-        gr.outputtext as "outputText",
+        gr."toolId",
+        gr."inputJson",
+        gr."outputText",
         gr.status,
-        gr.errormessage as "errorMessage",
-        gr.createdat as "createdAt",
+        gr."errorMessage",
+        gr."createdAt",
         t.name as "toolName",
-        t.categoryid as "categoryId"
+        t."categoryId"
       FROM generation_runs gr
-      LEFT JOIN tools t ON gr.toolid = t.id
+      LEFT JOIN tools t ON gr."toolId" = t.id
       WHERE 1=1
     `;
     const params: any[] = [];
     let paramIndex = 1;
 
     if (toolId) {
-      query += ` AND gr.toolid = $${paramIndex}`;
+      query += ` AND gr."toolId" = $${paramIndex}`;
       params.push(toolId);
       paramIndex++;
     }
 
-    query += ` ORDER BY gr.createdat DESC LIMIT $${paramIndex} OFFSET $${paramIndex+1}`;
+    query += ` ORDER BY gr."createdAt" DESC LIMIT $${paramIndex} OFFSET $${paramIndex+1}`;
     params.push(parseInt(limit as string), parseInt(offset as string));
 
     const result = await pool.query(query, params);

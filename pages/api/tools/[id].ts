@@ -12,17 +12,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const result = await pool.query(`
       SELECT 
         id, 
-        categoryid as "categoryId", 
+        "categoryId", 
         name, 
         description, 
-        subcategory as "subCategory", 
-        thumbnailurl as "thumbnailUrl",
+        "subCategory", 
+        "thumbnailUrl",
         tags,
-        ispremium as "isPremium", 
-        metricvalue as "metricValue",
-        createdat as "createdAt",
-        updatedat as "updatedAt",
-        customprompt as "customPrompt"
+        "isPremium", 
+        "metricValue",
+        "createdAt",
+        "updatedAt",
+        "customPrompt"
       FROM tools WHERE id = $1
     `, [id]);
     const tool = result.rows[0];

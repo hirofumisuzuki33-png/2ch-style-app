@@ -14,52 +14,52 @@ async function initDatabase() {
       CREATE TABLE IF NOT EXISTS categories (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
-        sortOrder INTEGER DEFAULT 0
+        "sortOrder" INTEGER DEFAULT 0
       );
     `);
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS tools (
         id SERIAL PRIMARY KEY,
-        categoryId INTEGER NOT NULL,
+        "categoryId" INTEGER NOT NULL,
         name TEXT NOT NULL,
         description TEXT NOT NULL,
-        subCategory TEXT,
-        thumbnailUrl TEXT,
+        "subCategory" TEXT,
+        "thumbnailUrl" TEXT,
         tags TEXT,
-        isPremium BOOLEAN DEFAULT FALSE,
-        metricValue INTEGER DEFAULT 0,
-        customPrompt TEXT,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (categoryId) REFERENCES categories(id)
+        "isPremium" BOOLEAN DEFAULT FALSE,
+        "metricValue" INTEGER DEFAULT 0,
+        "customPrompt" TEXT,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY ("categoryId") REFERENCES categories(id)
       );
     `);
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS generation_runs (
         id SERIAL PRIMARY KEY,
-        toolId INTEGER NOT NULL,
-        inputJson TEXT NOT NULL,
-        outputText TEXT NOT NULL,
+        "toolId" INTEGER NOT NULL,
+        "inputJson" TEXT NOT NULL,
+        "outputText" TEXT NOT NULL,
         status TEXT DEFAULT 'success',
-        errorMessage TEXT,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (toolId) REFERENCES tools(id)
+        "errorMessage" TEXT,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY ("toolId") REFERENCES tools(id)
       );
     `);
 
     // インデックス作成
     await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_tools_category ON tools(categoryId);
+      CREATE INDEX IF NOT EXISTS idx_tools_category ON tools("categoryId");
     `);
 
     await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_runs_tool ON generation_runs(toolId);
+      CREATE INDEX IF NOT EXISTS idx_runs_tool ON generation_runs("toolId");
     `);
 
     await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_runs_created ON generation_runs(createdAt DESC);
+      CREATE INDEX IF NOT EXISTS idx_runs_created ON generation_runs("createdAt" DESC);
     `);
 
     console.log('✓ Database initialized successfully!');

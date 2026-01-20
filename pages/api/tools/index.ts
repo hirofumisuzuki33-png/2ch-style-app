@@ -11,24 +11,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     let query = `SELECT 
       id, 
-      categoryid as "categoryId", 
+      "categoryId", 
       name, 
       description, 
-      subcategory as "subCategory", 
-      thumbnailurl as "thumbnailUrl",
+      "subCategory", 
+      "thumbnailUrl",
       tags,
-      ispremium as "isPremium", 
-      metricvalue as "metricValue",
-      createdat as "createdAt",
-      updatedat as "updatedAt",
-      customprompt as "customPrompt"
+      "isPremium", 
+      "metricValue",
+      "createdAt",
+      "updatedAt",
+      "customPrompt"
     FROM tools WHERE 1=1`;
     const params: any[] = [];
     let paramIndex = 1;
 
     // カテゴリフィルタ
     if (categoryId) {
-      query += ` AND categoryid = $${paramIndex}`;
+      query += ` AND "categoryId" = $${paramIndex}`;
       params.push(categoryId);
       paramIndex++;
     }
@@ -43,9 +43,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // ソート
     if (sort === 'popular') {
-      query += ' ORDER BY metricvalue DESC, createdat DESC';
+      query += ' ORDER BY "metricValue" DESC, "createdAt" DESC';
     } else if (sort === 'new') {
-      query += ' ORDER BY createdat DESC';
+      query += ' ORDER BY "createdAt" DESC';
     }
 
     // ページング用のカウント

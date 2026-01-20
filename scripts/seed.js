@@ -177,7 +177,7 @@ async function seedDatabase() {
     // カテゴリ投入
     for (const category of categories) {
       await pool.query(
-        'INSERT INTO categories (name, sortOrder) VALUES ($1, $2)',
+        'INSERT INTO categories (name, "sortOrder") VALUES ($1, $2)',
         [category.name, category.sortOrder]
       );
     }
@@ -186,7 +186,7 @@ async function seedDatabase() {
     // ツール投入
     for (const tool of tools) {
       await pool.query(
-        `INSERT INTO tools (categoryId, name, description, subCategory, isPremium, metricValue)
+        `INSERT INTO tools ("categoryId", name, description, "subCategory", "isPremium", "metricValue")
          VALUES ($1, $2, $3, $4, $5, $6)`,
         [
           tool.categoryId,
