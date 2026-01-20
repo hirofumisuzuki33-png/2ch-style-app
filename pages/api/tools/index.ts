@@ -9,7 +9,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { categoryId, q, sort = 'popular', limit = '20', offset = '0' } = req.query;
     
-    let query = 'SELECT * FROM tools WHERE 1=1';
+    let query = `SELECT 
+      id, 
+      categoryid as "categoryId", 
+      name, 
+      description, 
+      subcategory as "subCategory", 
+      thumbnailurl as "thumbnailUrl",
+      tags,
+      ispremium as "isPremium", 
+      metricvalue as "metricValue",
+      createdat as "createdAt",
+      updatedat as "updatedAt",
+      customprompt as "customPrompt"
+    FROM tools WHERE 1=1`;
     const params: any[] = [];
     let paramIndex = 1;
 
@@ -36,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // ページング用のカウント
-    const countQuery = query.replace('SELECT *', 'SELECT COUNT(*)::int as total');
+    const countQuery = query.replace(/SELECT[\s\S]*?FROM/, 'SELECT COUNT(*)::int as total FROM');
     const countResult = await pool.query(countQuery, params);
     const total = countResult.rows[0].total;
 

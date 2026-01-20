@@ -15,7 +15,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // ツールの存在確認
-    const toolResult = await pool.query('SELECT * FROM tools WHERE id = $1', [toolId]);
+    const toolResult = await pool.query(`
+      SELECT 
+        id, 
+        categoryid as "categoryId", 
+        name, 
+        description, 
+        subcategory as "subCategory", 
+        thumbnailurl as "thumbnailUrl",
+        tags,
+        ispremium as "isPremium", 
+        metricvalue as "metricValue",
+        createdat as "createdAt",
+        updatedat as "updatedAt",
+        customprompt as "customPrompt"
+      FROM tools WHERE id = $1
+    `, [toolId]);
     const tool = toolResult.rows[0];
     
     if (!tool) {
@@ -23,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // カスタムプロンプトを取得
-    const customPrompt = tool.customprompt || tool.tags || null;
+    const customPrompt = tool.customPrompt || tool.tags || null;
 
     // Gemini APIを使用してテキスト生成（モデル指定、APIキー、カスタムプロンプト）
     const outputText = await generateText(

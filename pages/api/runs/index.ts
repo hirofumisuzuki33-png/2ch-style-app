@@ -17,9 +17,15 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     
     let query = `
       SELECT 
-        gr.*,
-        t.name as toolname,
-        t.categoryid
+        gr.id,
+        gr.toolid as "toolId",
+        gr.inputjson as "inputJson",
+        gr.outputtext as "outputText",
+        gr.status,
+        gr.errormessage as "errorMessage",
+        gr.createdat as "createdAt",
+        t.name as "toolName",
+        t.categoryid as "categoryId"
       FROM generation_runs gr
       LEFT JOIN tools t ON gr.toolid = t.id
       WHERE 1=1

@@ -35,7 +35,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         metricvalue
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *`,
+      RETURNING 
+        id, 
+        categoryid as "categoryId", 
+        name, 
+        description, 
+        subcategory as "subCategory", 
+        thumbnailurl as "thumbnailUrl",
+        tags,
+        ispremium as "isPremium", 
+        metricvalue as "metricValue",
+        createdat as "createdAt",
+        updatedat as "updatedAt",
+        customprompt as "customPrompt"`,
       [
         categoryId,
         name,

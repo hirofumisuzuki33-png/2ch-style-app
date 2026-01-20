@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       SELECT 
         c.id,
         c.name,
-        c.sortorder,
+        c.sortorder as "sortOrder",
         COUNT(t.id)::int as count
       FROM categories c
       LEFT JOIN tools t ON c.id = t.categoryid

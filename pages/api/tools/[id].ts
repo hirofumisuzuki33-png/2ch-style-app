@@ -9,7 +9,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { id } = req.query;
 
-    const result = await pool.query('SELECT * FROM tools WHERE id = $1', [id]);
+    const result = await pool.query(`
+      SELECT 
+        id, 
+        categoryid as "categoryId", 
+        name, 
+        description, 
+        subcategory as "subCategory", 
+        thumbnailurl as "thumbnailUrl",
+        tags,
+        ispremium as "isPremium", 
+        metricvalue as "metricValue",
+        createdat as "createdAt",
+        updatedat as "updatedAt",
+        customprompt as "customPrompt"
+      FROM tools WHERE id = $1
+    `, [id]);
     const tool = result.rows[0];
 
     if (!tool) {
