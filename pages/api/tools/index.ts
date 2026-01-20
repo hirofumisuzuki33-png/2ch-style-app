@@ -11,17 +11,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     let query = `SELECT 
       id, 
-      "categoryId", 
+      "categoryId" as "categoryId", 
       name, 
       description, 
-      "subCategory", 
-      "thumbnailUrl",
+      "subCategory" as "subCategory", 
+      "thumbnailUrl" as "thumbnailUrl",
       tags,
-      "isPremium", 
-      "metricValue",
-      "createdAt",
-      "updatedAt",
-      "customPrompt"
+      "isPremium" as "isPremium", 
+      "metricValue" as "metricValue",
+      "createdAt" as "createdAt",
+      "updatedAt" as "updatedAt",
+      "customPrompt" as "customPrompt"
     FROM tools WHERE 1=1`;
     const params: any[] = [];
     let paramIndex = 1;
@@ -43,13 +43,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // ソート
     if (sort === 'popular') {
-      query += ' ORDER BY "metricValue" DESC, "createdAt" DESC';
+      query += ' ORDER BY 10 DESC, 11 DESC';  // metricValue, createdAt
     } else if (sort === 'new') {
-      query += ' ORDER BY "createdAt" DESC';
+      query += ' ORDER BY 11 DESC';  // createdAt
     }
 
-    // ページング用のカウント
-    const countQuery = query.replace(/SELECT[\s\S]*?FROM/, 'SELECT COUNT(*)::int as total FROM');
+    // ページング用のカウント（ORDER BYを削除）
+    const countQuery = query.replace(/SELECT[\s\S]*?FROM/, 'SELECT COUNT(*)::int as total FROM').replace(/ORDER BY.*$/, '');
     const countResult = await pool.query(countQuery, params);
     const total = countResult.rows[0].total;
 
