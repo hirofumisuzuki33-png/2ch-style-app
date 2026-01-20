@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // カテゴリフィルタ
     if (categoryId) {
-      query += ` AND categoryId = $${paramIndex}`;
+      query += ` AND categoryid = $${paramIndex}`;
       params.push(categoryId);
       paramIndex++;
     }
@@ -30,9 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // ソート
     if (sort === 'popular') {
-      query += ' ORDER BY metricValue DESC, createdAt DESC';
+      query += ' ORDER BY metricvalue DESC, createdat DESC';
     } else if (sort === 'new') {
-      query += ' ORDER BY createdAt DESC';
+      query += ' ORDER BY createdat DESC';
     }
 
     // ページング用のカウント

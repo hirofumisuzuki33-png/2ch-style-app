@@ -26,13 +26,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // ツールを作成
     const result = await pool.query(
       `INSERT INTO tools (
-        categoryId, 
+        categoryid, 
         name, 
         description, 
-        subCategory, 
-        isPremium, 
-        customPrompt, 
-        metricValue
+        subcategory, 
+        ispremium, 
+        customprompt, 
+        metricvalue
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *`,

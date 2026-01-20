@@ -11,12 +11,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       SELECT 
         c.id,
         c.name,
-        c.sortOrder,
+        c.sortorder,
         COUNT(t.id)::int as count
       FROM categories c
-      LEFT JOIN tools t ON c.id = t.categoryId
-      GROUP BY c.id, c.name, c.sortOrder
-      ORDER BY c.sortOrder ASC
+      LEFT JOIN tools t ON c.id = t.categoryid
+      GROUP BY c.id, c.name, c.sortorder
+      ORDER BY c.sortorder ASC
     `);
 
     res.status(200).json(result.rows);

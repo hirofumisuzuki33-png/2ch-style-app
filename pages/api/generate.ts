@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // 生成結果を保存
     const result = await pool.query(
-      `INSERT INTO generation_runs (toolId, inputJson, outputText, status)
+      `INSERT INTO generation_runs (toolid, inputjson, outputtext, status)
        VALUES ($1, $2, $3, $4)
        RETURNING id`,
       [
@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     // メトリック値を更新（利用回数）
-    await pool.query('UPDATE tools SET metricValue = metricValue + 1 WHERE id = $1', [toolId]);
+    await pool.query('UPDATE tools SET metricvalue = metricvalue + 1 WHERE id = $1', [toolId]);
 
     res.status(200).json({
       runId: result.rows[0].id,
