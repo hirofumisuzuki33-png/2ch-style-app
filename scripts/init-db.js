@@ -9,6 +9,13 @@ async function initDatabase() {
   console.log('Initializing PostgreSQL database...');
 
   try {
+    // 既存のテーブルを削除（開発環境のみ推奨）
+    await pool.query(`DROP TABLE IF EXISTS generation_runs CASCADE;`);
+    await pool.query(`DROP TABLE IF EXISTS tools CASCADE;`);
+    await pool.query(`DROP TABLE IF EXISTS categories CASCADE;`);
+    
+    console.log('✓ Dropped existing tables');
+
     // テーブル作成
     await pool.query(`
       CREATE TABLE IF NOT EXISTS categories (
